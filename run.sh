@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DATA_SET_NAME="kenny_surf"
+DATA_SET_NAME="kenny"
 
 # python test.py --pose data/kenny/transforms_val.json \
 #     --ckpt trial_kenny_torso/checkpoints/ngp.pth \
@@ -15,7 +15,6 @@ DATA_SET_NAME="kenny_surf"
 #     --workspace trial_kenny_test \
 #     -O \
 #     --torso
-
 
 python main.py data/$DATA_SET_NAME \
     --workspace trial_${DATA_SET_NAME}_eo_torso \
