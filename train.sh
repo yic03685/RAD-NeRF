@@ -4,6 +4,7 @@ DATA_INPUT_FOLDER="data"
 DATA_TEMP_FOLDER="temp_data" # we dont work inplace because it will slow down from sync
 TRAINED_MODEL_FOLDER="trained"
 DEFAULT_ITERATION=200000
+DEFAULT_LIPS_FINTUE_ITERATION=250000
 
 if [ -z "$1" ]; then
   echo "Error: Dataset name not provided."
@@ -25,15 +26,15 @@ python data_utils/process.py $DATASET_FOLDER/$DATASET_NAME.mp4
 
 # train
 echo ==Start Overll Training==
-CUDA_VISIBLE_DEVICES=0 python main.py $DATASET_FOLDER/ --workspace $TRAINED_MODEL_FOLDER/$DATASET_NAME/${DATA_SET_NAME}_eo/ -O --iters 10000
+CUDA_VISIBLE_DEVICES=0 python main.py $DATASET_FOLDER/ --workspace $TRAINED_MODEL_FOLDER/$DATASET_NAME/${DATASET_NAME}_eo/ -O --iters $DEFAULT_ITERATION
 echo ==Start Lips Finetuning==
-CUDA_VISIBLE_DEVICES=0 python main.py $DATASET_FOLDER/ --workspace $TRAINED_MODEL_FOLDER/$DATASET_NAME/${DATA_SET_NAME}_eo/ -O --finetune_lips --iters 15000
+CUDA_VISIBLE_DEVICES=0 python main.py $DATASET_FOLDER/ --workspace $TRAINED_MODEL_FOLDER/$DATASET_NAME/${DATASET_NAME}_eo/ -O --finetune_lips --iters $DEFAULT_LIPS_FINTUE_ITERATION
 echo ==Start Torso Training==
-CUDA_VISIBLE_DEVICES=0 python main.py $DATASET_FOLDER/ --workspace $TRAINED_MODEL_FOLDER/$DATASET_NAME/${DATA_SET_NAME}_eo_torso/ -O --torso --iters 10000 --head_ckpt $TRAINED_MODEL_FOLDER/$DATASET_NAME/${DATA_SET_NAME}_eo/checkpoints/ngp.pth
+CUDA_VISIBLE_DEVICES=0 python main.py $DATASET_FOLDER/ --workspace $TRAINED_MODEL_FOLDER/$DATASET_NAME/${DATASET_NAME}_eo_torso/ -O --torso --iters $DEFAULT_ITERATION --head_ckpt $TRAINED_MODEL_FOLDER/$DATASET_NAME/${DATASET_NAME}_eo/checkpoints/ngp.pth
 
 # test
 echo ==Running Tests==
-CUDA_VISIBLE_DEVICES=0 python main.py $DATASET_FOLDER/ --workspace $TRAINED_MODEL_FOLDER/$DATASET_NAME/${DATA_SET_NAME}_eo_torso/ -O --torso --test
+CUDA_VISIBLE_DEVICES=0 python main.py $DATASET_FOLDER/ --workspace $TRAINED_MODEL_FOLDER/$DATASET_NAME/${DATASET_NAME}_eo_torso/ -O --torso --test
 
 # remove temp files
 rm -rf $DATA_TEMP_FOLDER
