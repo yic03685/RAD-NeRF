@@ -1,6 +1,7 @@
 #!/bin/bash
 
-DATA_FOLDER="data"
+DATA_INPUT_FOLDER="data"
+DATA_TEMP_FOLDER="temp_data" # we dont work inplace because it will slow down from sync
 TRAINED_MODEL_FOLDER="trained"
 DEFAULT_ITERATION=200000
 
@@ -11,10 +12,11 @@ if [ -z "$1" ]; then
 fi
 
 DATASET_NAME=$(basename "$1")
-DATASET_FOLDER=$DATA_FOLDER/$DATASET_NAME
+DATASET_FOLDER=$DATA_TEMP_FOLDER/$DATASET_NAME
 
 # data processing
 mkdir -p $DATASET_FOLDER
+cp $DATA_INPUT_FOLDER/$DATASET_NAME/${DATASET_NAME}.mp4 $DATASET_FOLDER/${DATASET_NAME}.mp4
 conda run -n pytorch3d python data_utils/process.py $DATASET_FOLDER/$DATASET_NAME.mp4
 
 # train
