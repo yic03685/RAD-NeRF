@@ -5,7 +5,7 @@ OUTPUT_FOLDER="trained"
 
 if [ -z "$1" ]; then
   echo "Error: Dataset name not provided."
-  echo "Usage: $0 <video_file_name>"
+  echo "Usage: $0 <dataset_name>"
   exit 1
 fi
 
