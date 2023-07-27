@@ -27,3 +27,6 @@ CUDA_VISIBLE_DEVICES=0 conda run -n pytorch3d python main.py $DATASET_FOLDER/ --
 
 # test
 CUDA_VISIBLE_DEVICES=0 conda run -n pytorch3d python main.py $DATASET_FOLDER/ --workspace $TRAINED_MODEL_FOLDER/$DATASET_NAME/${DATA_SET_NAME}_eo_torso/ -O --torso --test
+
+# remove temp files
+rm -rf $DATA_TEMP_FOLDER
