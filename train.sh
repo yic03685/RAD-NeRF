@@ -24,6 +24,14 @@ cp $DATA_INPUT_FOLDER/$DATASET_NAME/${DATASET_NAME}.mp4 $DATASET_FOLDER/${DATASE
 echo ==Start Pre-process==
 python data_utils/process.py $DATASET_FOLDER/$DATASET_NAME.mp4
 
+# Move some metadata beside the final model. These are needed for inference too
+cp $DATASET_FOLDER/transforms_val.json $TRAINED_MODEL_FOLDER/$DATASET_NAME/
+cp $DATASET_FOLDER/bc.jpg $TRAINED_MODEL_FOLDER/$DATASET_NAME/
+cp -R $DATASET_FOLDER/gt_imgs $TRAINED_MODEL_FOLDER/$DATASET_NAME/
+cp -R $DATASET_FOLDER/ori_imgs $TRAINED_MODEL_FOLDER/$DATASET_NAME/
+cp -R $DATASET_FOLDER/parsing $TRAINED_MODEL_FOLDER/$DATASET_NAME/
+cp -R $DATASET_FOLDER/torso_imgs $TRAINED_MODEL_FOLDER/$DATASET_NAME/
+
 # train
 echo ==Start Overll Training==
 CUDA_VISIBLE_DEVICES=0 python main.py $DATASET_FOLDER/ --workspace $TRAINED_MODEL_FOLDER/$DATASET_NAME/${DATASET_NAME}_eo/ -O --iters $DEFAULT_ITERATION

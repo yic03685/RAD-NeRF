@@ -2,7 +2,7 @@
 # Example usage. Put wav files under
 # input
 #  -dataset1
-#   -test.wave
+#   -test.wav
 # and run ./run.sh model_name dataset1
 
 INPUT_FOLDER="input"
@@ -31,40 +31,44 @@ echo $WAV_FILES
 for file_path in $WAV_FILES; do
   # Get the file name without the extension
   file_name=$(basename "$file_path" .wav)
-  echo $file_name
   
   # Create a folder with the same name as the file (if it doesn't exist)
   folder_name="$DATASET_FOLDER/$file_name"
   if [ ! -d "$folder_name" ]; then
     mkdir "$folder_name"
   fi
-  echo $folder_name
 
   # Move the file into its corresponding folder
   mv "$file_path" "$folder_name/"
 
   # Create npy file
-  conda run -n pytorch3d python nerf/asr.py --wav $folder_name/${file_name}.wav --save_feats
+  python nerf/asr.py --wav $folder_name/${file_name}.wav --save_feats
 
-#   # Run the synthesis
-#   conda run -n pytorch3d python main.py \
-#     --workspace $TRAINED_MODEL_FOLDER/$MODEL_NAME/${MODEL_NAME}_eo_torso \
-#     --aud $folder_name/${file_name}.npy \
-#     --torso \
-#     --smooth_path_window 50 \
-#     --data_range 0 -2 \
-#     -O \
-#     --test 
+  # Run the synthesis 
+  # [This is for intended inference but the face is not as natural as using per frame image as helper]
+  # CUDA_VISIBLE_DEVICES=0 python test.py --pose $TRAINED_MODEL_FOLDER/$MODEL_NAME/transforms_val.json \
+  #     --ckpt $TRAINED_MODEL_FOLDER/$MODEL_NAME/${MODEL_NAME}_eo_torso/checkpoints/ngp.pth \
+  #     --aud $folder_name/${file_name}_eo.npy \
+  #     --workspace $folder_name \
+  #     --data_range 0 -2 \
+  #     -O \
+  #     --torso \
+  #     --smooth_eye \
+  #     --smooth_lips \
+  #     --smooth_path \
+  #     --bg_img $TRAINED_MODEL_FOLDER/$MODEL_NAME/bc.jpg 
 
-    # Run the synthesis
-    conda run -n pytorch3 python test.py --pose $TRAINED_MODEL_FOLDER/$MODEL_NAME/transforms_val.json \
-        --ckpt $TRAINED_MODEL_FOLDER/$MODEL_NAME/${MODEL_NAME}_eo_torso/checkpoints/ngp.pth \
-        --aud $folder_name/${file_name}.npy \
-        --workspace $folder_name \
-        --smooth_path_window 50 \
-        --data_range 0 -2 \
-        -O \
-        --torso
+  # This method uses original frames data which gives better result
+  CUDA_VISIBLE_DEVICES=0 python main.py \
+    $TRAINED_MODEL_FOLDER/$MODEL_NAME/ \
+    --workspace $TRAINED_MODEL_FOLDER/$MODEL_NAME/${MODEL_NAME}_eo_torso/ \
+    -O --torso --test --aud \
+    $folder_name/${file_name}_eo.npy
+
+  ffmpeg -i $TRAINED_MODEL_FOLDER/$MODEL_NAME/${MODEL_NAME}_eo_torso/results/*.mp4 -i $folder_name/${file_name}.wav -c:v copy -c:a aac -strict experimental $folder_name/result.mp4
+
+  # remove temp files
+  rm $folder_name/${file_name}_eo.wavnpy
 done
 
 
