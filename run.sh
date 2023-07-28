@@ -68,7 +68,7 @@ for file_path in $WAV_FILES; do
   ffmpeg -i $TRAINED_MODEL_FOLDER/$MODEL_NAME/${MODEL_NAME}_eo_torso/results/*.mp4 -i $folder_name/${file_name}.wav -c:v copy -c:a aac -strict experimental $folder_name/result.mp4
 
   # remove temp files
-  rm $folder_name/${file_name}_eo.wavnpy
+  rm $folder_name/${file_name}_eo.npy
 done
 
 

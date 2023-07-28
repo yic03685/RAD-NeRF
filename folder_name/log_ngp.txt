@@ -1,0 +1,6 @@
+[INFO] Trainer: ngp | 2023-07-28_07-37-45 | cuda | fp16 | folder_name
+[INFO] #parameters: 4231701
+[INFO] Loading latest checkpoint ...
+[WARN] No checkpoint found, model randomly initialized.
+==> Start Test, save results to folder_name/results
+==> Finished Test.
