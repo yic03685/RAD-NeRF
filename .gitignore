@@ -19,3 +19,8 @@ trained
 scripts/train_chris_eo.sh
 scripts/train_marco_eo.sh
 scripts/test.sh
+
+
+input
+output
+temp
