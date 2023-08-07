@@ -15,9 +15,6 @@ fi
 DATASET_NAME=$(basename "$1")
 DATASET_FOLDER=$DATA_TEMP_FOLDER/$DATASET_NAME
 
-# use the conda pytorch environment
-conda activate pytorch3d
-
 # data processing
 mkdir -p $DATASET_FOLDER
 cp $DATA_INPUT_FOLDER/$DATASET_NAME/${DATASET_NAME}.mp4 $DATASET_FOLDER/${DATASET_NAME}.mp4
