@@ -53,7 +53,7 @@ def extract_landmarks(ori_imgs_dir):
         input = cv2.imread(image_path, cv2.IMREAD_UNCHANGED) # [H, W, 3]
         input = cv2.cvtColor(input, cv2.COLOR_BGR2RGB)
         preds = fa.get_landmarks(input)
-        if len(preds) > 0:
+        if preds is not None and len(preds) > 0:
             lands = preds[0].reshape(-1, 2)[:,:2]
             np.savetxt(image_path.replace('jpg', 'lms'), lands, '%f')
     del fa
