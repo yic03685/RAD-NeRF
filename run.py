@@ -30,13 +30,11 @@ def main():
 
     # Create video
     os.environ["CUDA_VISIBLE_DEVICES"] = "0"
-    subprocess.run(["python", "test.py", 
-                    "--pose", os.path.join(trained_metadata_path, "transforms_val.json"),
+    subprocess.run(["python", "main.py", trained_metadata_path,
                     "--ckpt", os.path.join(trained_model_path, "checkpoints/ngp.pth"),
                     "--workspace", TEMP_FOLDER,
-                    "--bg_img", os.path.join(trained_metadata_path, "bc.jpg"),
                     "--aud", os.path.join(TEMP_FOLDER, f"{input_audio_name}_eo.npy"),
-                    "-O", "--torso", "--data_range", "0", "100"])
+                    "-O", "--torso", "--test", "--data_range", "0", "100"])
     
     # Filter files with the specified prefix
     file_list = os.listdir(os.path.join(TEMP_FOLDER, "results"))
