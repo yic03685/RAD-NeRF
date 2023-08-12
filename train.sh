@@ -3,8 +3,9 @@
 DATA_INPUT_FOLDER="data"
 DATA_TEMP_FOLDER="temp_data" # we dont work inplace because it will slow down from sync
 TRAINED_MODEL_FOLDER="trained"
-DEFAULT_ITERATION=200000
-DEFAULT_LIPS_FINTUE_ITERATION=250000
+DEFAULT_ITERATION=300000
+DEFAULT_LIPS_FINTUE_ITERATION=400000
+DEFAULT_TORSO_TRAINING_ITERATION=50000
 
 if [ -z "$1" ]; then
   echo "Error: Dataset name not provided."
@@ -32,11 +33,11 @@ cp -R $DATASET_FOLDER/torso_imgs $TRAINED_MODEL_FOLDER/$DATASET_NAME/
 
 # train
 echo ==Start Overll Training==
-CUDA_VISIBLE_DEVICES=0 python main.py $DATASET_FOLDER/ --workspace $TRAINED_MODEL_FOLDER/$DATASET_NAME/${DATASET_NAME}_eo/ -O --iters $DEFAULT_ITERATION --lambda_amb 1.5
+CUDA_VISIBLE_DEVICES=0 python main.py $DATASET_FOLDER/ --workspace $TRAINED_MODEL_FOLDER/$DATASET_NAME/${DATASET_NAME}_eo/ -O --iters $DEFAULT_ITERATION --lambda_amb 10
 echo ==Start Lips Finetuning==
-CUDA_VISIBLE_DEVICES=0 python main.py $DATASET_FOLDER/ --workspace $TRAINED_MODEL_FOLDER/$DATASET_NAME/${DATASET_NAME}_eo/ -O --finetune_lips --iters $DEFAULT_LIPS_FINTUE_ITERATION --lambda_amb 1.5
+CUDA_VISIBLE_DEVICES=0 python main.py $DATASET_FOLDER/ --workspace $TRAINED_MODEL_FOLDER/$DATASET_NAME/${DATASET_NAME}_eo/ -O --finetune_lips --iters $DEFAULT_LIPS_FINTUE_ITERATION --lambda_amb 10
 echo ==Start Torso Training==
-CUDA_VISIBLE_DEVICES=0 python main.py $DATASET_FOLDER/ --workspace $TRAINED_MODEL_FOLDER/$DATASET_NAME/${DATASET_NAME}_eo_torso/ -O --torso --iters $DEFAULT_ITERATION --head_ckpt $TRAINED_MODEL_FOLDER/$DATASET_NAME/${DATASET_NAME}_eo/checkpoints/ngp.pth --lambda_amb 1.5
+CUDA_VISIBLE_DEVICES=0 python main.py $DATASET_FOLDER/ --workspace $TRAINED_MODEL_FOLDER/$DATASET_NAME/${DATASET_NAME}_eo_torso/ -O --torso --iters $DEFAULT_TORSO_TRAINING_ITERATION --head_ckpt $TRAINED_MODEL_FOLDER/$DATASET_NAME/${DATASET_NAME}_eo/checkpoints/ngp.pth
 
 # test
 echo ==Running Tests==
