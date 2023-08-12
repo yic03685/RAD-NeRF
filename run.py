@@ -3,6 +3,8 @@ import shutil
 import subprocess
 from LearningBuddyCommon.integration.integration_utils import get_config_file
 
+DEFAULT_HEAD_MOVEMENT_SCALE = 100
+
 INPUT_FOLDER = "input"
 OUTPUT_FOLDER= "output"
 TRAINED_MODEL_FOLDER = "trained"
@@ -14,6 +16,7 @@ def main():
     input_audio_name, _extension = os.path.splitext(os.path.basename(input_audio_path))
     output_audio_path = config["output_path"]
     model_name = config["model_name"]
+    max_head_movement_scale = config["max_head_movement_scale"] or DEFAULT_HEAD_MOVEMENT_SCALE
 
 
     # in order not to pollute input, we copy to a temp file
@@ -34,7 +37,7 @@ def main():
                     "--ckpt", os.path.join(trained_model_path, "checkpoints/ngp.pth"),
                     "--workspace", TEMP_FOLDER,
                     "--aud", os.path.join(TEMP_FOLDER, f"{input_audio_name}_eo.npy"),
-                    "-O", "--torso", "--test", "--data_range", "0", "100"])
+                    "-O", "--torso", "--test", "--data_range", "0", f"{max_head_movement_scale}"])
     
     # Filter files with the specified prefix
     file_list = os.listdir(os.path.join(TEMP_FOLDER, "results"))
